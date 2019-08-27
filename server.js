@@ -1,6 +1,5 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var gaussian = require('gaussian');
 var helpers = require('./helpers');
 var app = express();
 const port = 3000;
@@ -17,7 +16,6 @@ app.get('/',  (req, res) => {
 app.post('/getthrivescore', (req, res) => {
   var cashFlow = req.body.cashFlow;
   var flag = 0;
-  //var incrementer = 0;
   var period = req.body.period
   console.time('startTest');
   for(let runIndex =0; runIndex<5000; runIndex++) {
