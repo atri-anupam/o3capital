@@ -52,8 +52,6 @@ module.exports = {
           4.22769553e-01,  2.94053088e-01,  1.16604694e-01,  1.26146783e-01,
         -9.88435952e-02,  1.40212273e-01,  2.59496172e-01,  2.08709944e-01
       ];
-      console.log("cashflow is"+ cashFlow);
-      console.log("period is"+ period);
       var netWorth = cashFlow[0];
       for(let i=0; i<period; i++) {
         var randNumber = (Math.floor(Math.random() * 200) + 1);
