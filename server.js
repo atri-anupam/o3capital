@@ -119,7 +119,7 @@ function idealSavings(age, noOfKids, salary){
       sal[0] = annualize(salary);
   }
 
-  var houseExp = house(sal[0]);
+  houseExp = house(sal[0]);
   var houseDownpay = homedownpayment * houseExp;
   var houseEmi = annualize(emi(houseExp-houseDownpay, homeloaninterest/12, homeloanperiod));
 
