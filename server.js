@@ -275,7 +275,7 @@ app.post('/getthrivescore', (req, res) => {
       flag = flag +1;
     }
   }
-  var result = 1 - parseFloat(flag/5000);
+  var result = 1 - parseFloat(flag/8000);
   res.json({
     thriveScore: result
   });
