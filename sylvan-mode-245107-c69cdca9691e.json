@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "sylvan-mode-245107",
+  "private_key_id": "c69cdca9691e5ce42990895c2ae4145d185aea27",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCs0ZU/GLR0thDh\ngYyyfwGD3xiHwsYSExtoXf/3MctJUZvdDuvFre4WG+i4d4Ezejej7SEnZB+f42Se\ntLbCxwcOhyZjFmcoyPhVALP4R3+Y57mGKXNKj4jn1SsaUpjZNNXktOJevSAIrHk8\nPkJY5l+irij0cpLQmH/IJqB+p0pQYPVFLVb33Xt1PXGlFzxyZKpqcusstNDTq6tK\nK0qz/DfzrE8m4ZW7WiB9q5+oS1SzvBSSgXwVVW1c+jPbNg1gkYLjCxSGWwQyjDyd\nGBJV/aeC4Cvx+7j09/GDFwMD4uH7S77iE4pyswwqj7Al+1bGolsL+KF1VLksjl3o\nLLwW1bfhAgMBAAECggEAA9OEFWiLnkXlq8h9f/o142COH3tdfUr1AWOLZkKw+IeZ\nBtTsvWyzZ8PobCUhNC2Ri8yVPlUGKjkTojvoC/nyGw08+VampA2HCgLA+U9D8PO4\ndNL4HX9+DXv3v1Zy0eRMlAq5NFXFnsuKx52tRGCdX3GxsG/U9k9aDOlmBkfX6l2h\n3cb8MSV3LWDFP2ho8Qg1Jq+PANdkRz7jdlKnIp/YpkTeGzUFp6O0CFBwav2oJRhS\nqMPmrkwrLgGmcvWu/x1E5aP/rVEHuou/oU5F4CIQAnGAZBy0/aBhZKiTgNVtd4mh\n3HACpra1S9nW/6Kjnjtlv83GNpyg0UtQUhdSpXAD7QKBgQDcAdUQKcwl33m1nytB\n6SYHDYhoKLIY/WSgb6UyP86eK5592gA6H0eHEFLM1GEg3oyfwlemPkdoPMFkW5Am\nKEYNvlCKnDTtpUOov/+s11hIHv87TYMiHR6UAoYrOifXBcrfOTEw5iTmiH83hoLY\nyT1CUKj93R0I12jqPJlsvQNcXwKBgQDJF3ChHSs2Ym7C31gRkgo0wpdKqfYro5zW\nxPqijLSFeL7jG0fjWBV65tL13Iv3AheufX7Lv525746mz+Z7/HAnLWRig976kwWA\nzLRUIgf4y4eE6XAaOYadt0O25lMSjTc7ZBlhXFOSCfUmrPF6e+R7fzuF4uAajqOq\n0kbJIT9TvwKBgHFwgGvVIW5lzFvZtnRFw1XfpHYQhcRc44XWC1fdjqv/0bkSrwtJ\nFZiO0iLLX0mTdu7pRkhx1F/q88zLaYhDO9vaRa0y3herHzfjx/FXGC4XzYLGdNci\nLKIkqwme8uvsEK8IzlRoVp6HwxDeSpl9KhkHfhtn55CngXFFzdZDn3gBAoGAFNJq\nhSRCDzWOBnud4OPgTqo/hCmpJcehO9PVp/Mt1gw0p8txXCcIwlsYSQD3NTJwRU8V\nS/+hU1lsyfUJBpmS+1uF43WIJyYGEdogaf3EGYzpkWeihfSi7b3GMzASNf+NUocA\n4cXvmVWSntiVgHtHo0n/XdOqJNXUOKHhVn4s0n0CgYEApZ09L20Zi3rb1DGWOFnp\nC6mw1i9SdZrFFzUC/U+AeT8ddR/0rvZXmGC+8t3BPELyHh9Nf4OeIMaVJSFEnjjs\nES7maVok7c7ubS9xUdUoJx8+YbN2uB+9kpfDiG/HuGBZ5pOsCKrN43w4f4vboSBR\ndU0dJIOE1innxqNHnOaSSx4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "thrive-backend@sylvan-mode-245107.iam.gserviceaccount.com",
+  "client_id": "112432370119962538000",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/thrive-backend%40sylvan-mode-245107.iam.gserviceaccount.com"
+}
