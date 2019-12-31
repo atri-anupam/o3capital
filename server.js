@@ -1,5 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var moment = require('moment');
+var fs = require('fs');
+var csv = require('csv-parser');
+const csvToJson=require("csvtojson");
+var gs = require('google-spreadsheet');
 var helpers = require('./helpers');
 var app = express();
 const port = 3000;
@@ -260,10 +265,212 @@ function recBal(exp) {
   return exp*1.5;
 }
 
+//Code for the holdings
+
+var finalData = {};
+var finalTransactions = [];
+var finalHoldings = [];
+
+//function for getting the last month date
+function lastMonthDate(req, res) {
+  console.log('function hit');
+  var exist = 0;
+  var dateLastMonth = moment().format();
+  console.log("dlm", dateLastMonth);
+  dateLastMonth = moment(dateLastMonth).subtract(30, 'days');
+  while(exist == 0) {
+    if( moment(dateLastMonth).day() == 0) {
+      dateLastMonth = moment.subtract(1, 'days');
+      dateLastMonth = moment().format('DDMMYYYY');
+    }else if(moment(dateLastMonth).day() == 6) {
+      dateLastMonth = moment.subtract(1, 'days');
+      dateLastMonth = moment().format('DDMMYYYY');
+    }else {
+      exist = 1;
+    }
+  }
+  console.log('here');
+  console.log(dateLastMonth);
+  res.json(dateLastMonth);
+}
+
+function readingClientList(req, res) {
+
+}
+
+async function readingIrrFile(req, res) {
+  console.log('Irr function hit');
+  var result;
+  var csvFilePath = '/Users/anupamatri/Downloads/IRR.csv';
+  result = await csvToJson().fromFile(csvFilePath);
+  var len = result.length;
+
+  //getting the client name
+  var firstObj = result[0];
+  var keyArray = Object.keys(firstObj);
+  var firstKey = keyArray[0];
+  var dateString = result[0][firstKey];
+  dateString = dateString.replace('As of ', '');
+  dateString = dateString.replace(/-/g, '/');
+  var clientName = firstKey.replace('Performance by Security for ', '');
+}
+
+async function readingPerformanceAppresalFile(req, res) {
+  console.log('Appresal file function hit');
+  var result;
+  var singleHoldingObj;
+  var csvFilePath = '/Users/anupamatri/Downloads/PA_2512.csv';
+  result = await csvToJson().fromFile(csvFilePath);
+  console.log(result);
+  var len = result.length;
+  for(var i=0; i< len; i++) {
+    if(result[i].SYMBOLNAME != 'Notional Amount Adj.') {
+      singleHoldingObj = {};
+      let date = '';
+      let totalGainLoss ='';
+      let marketValue = '';
+      let totalCost = '';
+      let marketPrice = '';
+      if(result[i]['Holding Date'] != '') {
+        result[i]['Holding Date'].replace(/-/g, '/');
+      }
+      date = result[i]['Holding Date'];
+      totalGainLoss = parseFloat(result[i]['Gain/Loss']);
+      totalGainLoss = totalGainLoss.toFixed(2);
+      marketValue = parseFloat(result[i]['Market Value']);
+      marketValue = marketValue.toFixed(2);
+      totalCost = parseFloat(result[i]['Total Cost']);
+      totalCost = totalCost.toFixed(2);
+      marketPrice = parseFloat(result[i]['Unit Price']);
+      marketPrice = marketPrice.toFixed(2);
+      singleHoldingObj.DATE = date;
+      singleHoldingObj.ISIN = '';
+      
+      //fix for future and options
+      if(result[i]['Asset Class'] == 'Futures' || result[i]['Asset Class'] == 'Options') {
+        singleHoldingObj.TOTAL_GAIN_LOSS = totalGainLoss;
+        singleHoldingObj.MARKET_VALUE = totalGainLoss;
+        singleHoldingObj.TOTAL_COST = 0;
+      }else {
+        singleHoldingObj.TOTAL_GAIN_LOSS = totalGainLoss;
+        singleHoldingObj.MARKET_VALUE = marketValue;
+        singleHoldingObj.TOTAL_COST = totalCost;
+      }
+
+      singleHoldingObj.RTA_CODE = '';
+      singleHoldingObj.PRODUCT_TYPE_TAG = '';
+      singleHoldingObj.PRODUCT_TYPE = '';
+      singleHoldingObj.SECURITY_NAME = result[i].SYMBOLNAME;
+      singleHoldingObj.SECURITY_CODE = result[i].SYMBOLCODE;
+      singleHoldingObj.UNITS = parseInt(result[i].QUANTITY);
+      singleHoldingObj.MARKET_PRICE = marketPrice;
+      singleHoldingObj.UNREALIZED_GAIN_LOSS = '';
+      singleHoldingObj.REALIZED_GAIN_LOSS = '';
+      singleHoldingObj.MOM_GAIN_LOSS = '';
+      singleHoldingObj.IRR = '';
+      singleHoldingObj.FOLIO_NUMBER = '';
+      singleHoldingObj.DP_ID = '';
+      singleHoldingObj.DP_NAME = '';
+      singleHoldingObj.CLIENT_ID = result[i].NAME;
+      singleHoldingObj.ASSET_CLASS = result[i]['Asset Class'];
+      singleHoldingObj.COUNTRY = '';
+      singleHoldingObj.DIVIDEND_FREQUENCY = '';
+      singleHoldingObj.REINVESTMENT_TYPE = '';
+      singleHoldingObj.DISTRIBUTION_TYPE = '';
+      singleHoldingObj.USER_ID = '';
+      singleHoldingObj.FAMILY_MEMBER_ID = '';
+    }
+    console.log("Single holdings object is");
+    console.log(singleHoldingObj);
+    finalHoldings.push(singleHoldingObj);
+  }
+}
+
+async function readingBankBookFile(req, res) {
+  console.log('bank book function hit');
+  var result ;
+  var singleTransactionObj;
+  var csvFilePath = '/Users/anupamatri/Downloads/BankBook.csv';
+  result = await csvToJson().fromFile(csvFilePath);
+
+  var len = result.length;
+  for(var i=0; i<len; i++) {
+    delete result[i]['o3 Securities Private Limited']
+  }
+  for(var i=0; i< len; i++) {
+    if(result[i].field2 != 'Name') {
+      singleTransactionObj = {};
+      let balance = '';
+      let securityName = '';
+      let date = '';
+      let f9, f10, f11, f12  = '';
+      if(result[i].field7 != '') {
+        securityName = result[i].field7.split('- ');
+      }else {
+        securityName = result[i].field7;
+      }
+      
+      if(result[i].field13 != '' && result[i].field13 != '0') {
+        balance = result[i].field13.replace(/,/g, '');
+      }else {
+        balance = result[i].field13;
+      }
+      balance = parseFloat(balance);
+      if(result[i].field5 != '') {
+        date = result[i].field5.replace(/-/g, '/');
+      }
+      if(result[i].field9 != '') {
+        f9 = result[i].field9.replace(/,/g, '');
+      }else {
+        f9 = result[i].field9;
+      }
+      f9 = parseFloat(f9);
+      if(result[i].field10 != '') {
+        f10 = result[i].field10.replace(/,/g, '');
+      }else {
+        f10 = result[i].field10;
+      }
+      f10 = parseFloat(f10);
+      if(result[i].field11 != '') {
+        f11 = result[i].field11.replace(/,/g, '');
+      }else {
+        f11 = result[i].field11;
+      }
+      f11 = parseFloat(f11);
+      if(result[i].field12 != '') {
+        f12 = result[i].field12.replace(/,/g, '');
+      }else {
+        f12 = result[i].field12;
+      }
+      f12 = parseFloat(f12);
+      singleTransactionObj.TRANSACTION_DATE = date;
+      singleTransactionObj.TRANSACTION_DESCRIPTION = '';
+      singleTransactionObj.CLIENT_ID = result[i].field2;
+      singleTransactionObj.DP_ID = '';
+      singleTransactionObj.FOLIO_NUMBER = '';
+      singleTransactionObj.ISIN = '';
+      singleTransactionObj.RTA_CODE = '';
+      singleTransactionObj.UNITS = '';
+      singleTransactionObj.SECURITY_NAME = securityName[1];
+      singleTransactionObj.USER_ID = '';
+      singleTransactionObj.FAMILY_MEMBER_ID = '';
+      singleTransactionObj.TRANSACTION_REFERENCE = '';
+      singleTransactionObj.BALANCE = balance;
+      singleTransactionObj.BUY_SELL_AMOUNT = f9+ f10+ f11+ f12;
+
+      finalTransactions.push(singleTransactionObj);
+    }
+  }
+  console.log('final transaction array is');
+  console.log(finalTransactions);
+}
+
 
 app.get('/',  (req, res) => {
   res.send('Hello world');
 });
+
+app.post('/checking', readingIrrFile);
 
 app.post('/getthrivescore', (req, res) => {
   var cashFlow = req.body.cashFlow;
